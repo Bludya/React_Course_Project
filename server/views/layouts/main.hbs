@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Projects Manager</title>
+    <link href="/css/site.css" type="text/css" rel="stylesheet">
+</head>
+
+<body>
+
+  <header>
+    <ul>
+        <li><a href="/">Home</a></li>
+        {{#if currentUser}}
+          <li><a href="/projects/manage">Projects</a></li>
+          <li><a href="/teams/manage/">Teams</a></li>
+        {{/if}}
+        {{#if isAdmin}}
+          <li><a href="/projects/create">Create Project</a></li>
+          <li><a href="/teams/create">Create Team</a></li>
+        {{/if}}
+        <div class="right">
+          {{#if currentUser}}
+            <li>Welcome, {{currentUser.username}}!</li>
+            <li><a href="/profile">Profile</a></li>
+            <li>
+                <form id="logout-form" action="/logout" method="post"></form>
+                <a href="javascript:document.getElementById('logout-form').submit()">Logout</a>
+            </li>
+            {{else}}
+            <li><a href="/login">Login</a></li>
+            <li><a href="/register">Register</a></li>
+            {{/if}}
+        </div>
+    </ul>
+  </header>
+
+  <main>
+      {{#if globalError}}
+        <span>{{globalError}}</span>
+      {{/if}}
+      {{{body}}}
+  </main>
+
+  <footer>
+      Express Exam @SoftUni
+  </footer>
+
+</body>
+
+</html>
+
+
+
+<!-- <!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>My Demo Server</title>
+    <link href="/css/site.css" type="text/css" rel="stylesheet">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <ul class="menu">
+                <li><a href="/">Home</a></li>
+                <li><a href="/about">About</a></li>
+                {{#if currentUser}}
+                <li>{{currentUser.username}}</li>
+                <li>
+                    <form id="logout-form" action="/logout" method="post"></form>
+                    <a href="javascript:document.getElementById('logout-form').submit()">Logout</a>
+                </li>
+                {{else}}
+                <li><a href="/login">Login</a></li>
+                <li><a href="/register">Register</a></li>
+                {{/if}}
+            </ul>
+        </header>
+        <main>
+            {{#if globalError}}
+            <span>{{globalError}}</span> {{/if}} {{{body}}}
+        </main>
+    </div>
+</body>
+
+</html> -->
