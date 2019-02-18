@@ -6,9 +6,6 @@ const defaultProfilePicture = "https://proxy.duckduckgo.com/iu/?u=http%3A%2F%2Fb
 const userSchema = new mongoose.Schema({
     username: { type: mongoose.Schema.Types.String, required: true, unique: true },
     hashedPass: { type: mongoose.Schema.Types.String, required: true },
-    firstName: { type: mongoose.Schema.Types.String, required: true },
-    lastName: { type: mongoose.Schema.Types.String, required: true },
-    teams:[{type: mongoose.Schema.Types.ObjectId, ref: 'Team'}],
     profilePicture: {type: mongoose.Schema.Types.String, default: defaultProfilePicture},
     salt: { type: mongoose.Schema.Types.String, required: true },
     roles: [{ type: mongoose.Schema.Types.String, default: 'User'}]
@@ -30,8 +27,6 @@ User.seedAdminUser = async () => {
         const hashedPass = encryption.generateHashedPassword(salt, '123');
         return User.create({
             username: 'admin',
-            firstName: 'Anonymous',
-            lastName: 'Could be anyone',
             salt,
             hashedPass,
             roles: ['Admin']

@@ -1,9 +1,10 @@
 const path = require('path');
 
 module.exports = {
+    tokenSecret: 'supersecretensecret',
     development: {
-      port: 4100,
-      dbPath: 'mongodb://root:root123@ds127995.mlab.com:27995/project-manager-exam'
+      port: 9999,
+      dbPath: 'mongodb://root:root123@ds139435.mlab.com:39435/react_project'
     },
     production: {}
 };

@@ -1,93 +1,86 @@
 const encryption = require('../util/encryption');
 const User = require('../models/User');
-const Team = require('../models/Team');
+const jwt = require('jsonwebtoken');
+const tokenSecret = require('../config/config').tokenSecret;
 
 module.exports = {
-    registerGet: (req, res) => {
-        res.render('users/register');
-    },
-    registerPost: async (req, res) => {
-        const reqUser = req.body;
+    register: async (req, res) => {
+        const {username, firstName, lastName, password, repeatPassword, profilePicture} = req.body;
+
+        if(!username || !firstName || !lastName || !password || !repeatPassword){
+          res.status(400)
+            .json({message: 'Please fill all of the required fields.'});
+          return;
+        }
+
+        if(password !== repeatPassword){
+          res.status(400)
+            .json({message: 'Password and repeatPassword don\'t match.'});
+        }
+
         const salt = encryption.generateSalt();
         const hashedPass =
-            encryption.generateHashedPassword(salt, reqUser.password);
+            encryption.generateHashedPassword(salt, password);
         try {
             const user = await User.create({
-                username: reqUser.username,
+                username,
                 hashedPass,
                 salt,
-                firstName: reqUser.firstName,
-                lastName: reqUser.lastName,
-                profilePicture: reqUser.profilePicture,
+                firstName,
+                lastName,
+                profilePicture,
                 roles: []
             });
-            req.logIn(user, (err, user) => {
-                if (err) {
-                    res.locals.globalError = err;
-                    res.render('users/register', user);
-                } else {
-                    res.redirect('/');
-                }
-            });
+
+            res.status(200)
+              .json({message: 'User created successfully!'})
         } catch (e) {
             console.log(e);
-            res.locals.globalError = e;
-            res.render('users/register');
+            res.status(500)
+              .json({message: 'User not created.'})
         }
     },
     logout: (req, res) => {
         req.logout();
         res.redirect('/');
     },
-    loginGet: (req, res) => {
-        res.render('users/login');
-    },
-    loginPost: async (req, res) => {
-        const reqUser = req.body;
+    login: async (req, res) => {
+        const {username, password} = req.body;
+
+        if(!username || !password){
+          res.status(400)
+            .json({message: 'Please fill all fields.'});
+        }
+
         try {
-            const user = await User.findOne({ username: reqUser.username });
+            const user = await User.findOne({ username });
+
             if (!user) {
-                errorHandler('Invalid user data');
-                return;
+                return res.status(404).json({message: 'User not found!'});
             }
-            if (!user.authenticate(reqUser.password)) {
-                errorHandler('Invalid user data');
-                return;
+
+            if (!user.authenticate(password)) {
+              return res.status(401).json({message: 'Invalid password.'});
             }
-            req.logIn(user, (err, user) => {
-                if (err) {
-                    errorHandler(err);
-                } else {
-                    res.redirect('/');
-                }
-            });
+
+            const token =
+            jwt.sign(
+              {
+                username,
+                userId: user._id.toString()
+              },
+              tokenSecret,
+              {expiresIn: '24h'}
+            );
+
+            res.status(200)
+            .json({message: 'Login successful!', token})
         } catch (e) {
-            errorHandler(e);
+          console.error(e);
+            res.status(500)
+              .json({message: 'Internal server error.'});
         }
 
-        function errorHandler(e) {
-            console.log(e);
-            res.locals.globalError = e;
-            res.render('users/login');
-        }
-    },
-    profileGet: async (req, res) => {
-      let user = req.user;
-
-      User.findById(req.user._id).populate({path: 'teams', populate : {path : 'projects'}})
-        .then((user) => {
-          let teams = [];
-          let projects = [];
-
-          for(let team of user.teams){
-            teams.push(team);
-            for(let project of team.projects){
-              projects.push(project);
-            }
-          }
-
-          res.render('users/profile',{user,teams, projects})
-        });
 
     }
 };
