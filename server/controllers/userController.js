@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken');
 const tokenSecret = require('../config/config').tokenSecret;
 
 module.exports = {
-    register: async (req, res) => {
+    register: (req, res) => {
         const {username, firstName, lastName, password, repeatPassword, profilePicture} = req.body;
 
         if(!username || !firstName || !lastName || !password || !repeatPassword){
@@ -21,28 +21,25 @@ module.exports = {
         const salt = encryption.generateSalt();
         const hashedPass =
             encryption.generateHashedPassword(salt, password);
-        try {
-            const user = await User.create({
-                username,
-                hashedPass,
-                salt,
-                firstName,
-                lastName,
-                profilePicture,
-                roles: []
-            });
 
-            res.status(200)
-              .json({message: 'User created successfully!'})
-        } catch (e) {
-            console.log(e);
-            res.status(500)
-              .json({message: 'User not created.'})
-        }
-    },
-    logout: (req, res) => {
-        req.logout();
-        res.redirect('/');
+        User.create({
+            username,
+            hashedPass,
+            salt,
+            firstName,
+            lastName,
+            profilePicture,
+            roles: []
+        })
+        .then(() => {
+          res.status(200)
+            .json({message: 'User created successfully!'})
+        })
+        .catch((e) => {
+          console.error(e);
+          res.status(500)
+            .json({message: 'User not created.'})
+        })
     },
     login: async (req, res) => {
         const {username, password} = req.body;

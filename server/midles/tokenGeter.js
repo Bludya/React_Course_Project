@@ -12,7 +12,6 @@ module.exports =  (req, res, next) => {
   try{
     decodedToken = jwt.verify(authHeader.split(' ')[1], tokenSecret);
   } catch(e){
-    console.log(e);
     next();
     return;
   }

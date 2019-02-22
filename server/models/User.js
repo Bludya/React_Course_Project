@@ -1,14 +1,13 @@
-const mongoose = require('mongoose');
+const {Schema, model} = require('mongoose');
 const encryption = require('../util/encryption');
 
-const defaultProfilePicture = "https://proxy.duckduckgo.com/iu/?u=http%3A%2F%2Fblog.ramboll.com%2Ffehmarnbelt%2Fwp-content%2Fthemes%2Framboll2%2Fimages%2Fprofile-img.jpg&f=1";
-
-const userSchema = new mongoose.Schema({
-    username: { type: mongoose.Schema.Types.String, required: true, unique: true },
-    hashedPass: { type: mongoose.Schema.Types.String, required: true },
-    profilePicture: {type: mongoose.Schema.Types.String, default: defaultProfilePicture},
-    salt: { type: mongoose.Schema.Types.String, required: true },
-    roles: [{ type: mongoose.Schema.Types.String, default: 'User'}]
+const userSchema = new Schema({
+    username: { type: String, required: true, unique: true },
+    hashedPass: { type: String, required: true },
+    salt: { type: String, required: true },
+    roles: [{ type: String, default: 'User'}],
+    questions: [{type: Schema.Types.ObjectId, ref: 'Question'}],
+    answers: [{type: Schema.Types.ObjectId, ref: 'Answer'}]
 });
 
 userSchema.method({
@@ -17,7 +16,7 @@ userSchema.method({
     }
 });
 
-const User = mongoose.model('User', userSchema);
+const User = model('User', userSchema);
 
 User.seedAdminUser = async () => {
     try {
