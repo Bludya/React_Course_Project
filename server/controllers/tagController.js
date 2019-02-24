@@ -7,7 +7,7 @@ module.exports = {
 
     if(!tagNames || !Array.isArray(tagNames)){
       res.status(400)
-        .json({message: 'No tags sent.'})
+        .json({error: 'No tags sent.'})
     }
 
     let createdTags = [];

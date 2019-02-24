@@ -5,17 +5,17 @@ const tokenSecret = require('../config/config').tokenSecret;
 
 module.exports = {
     register: (req, res) => {
-        const {username, firstName, lastName, password, repeatPassword, profilePicture} = req.body;
+        const {username, password, repeatPassword} = req.body;
 
-        if(!username || !firstName || !lastName || !password || !repeatPassword){
+        if(!username || !password || !repeatPassword){
           res.status(400)
-            .json({message: 'Please fill all of the required fields.'});
+            .json({error: 'Please fill all of the required fields.'});
           return;
         }
 
         if(password !== repeatPassword){
           res.status(400)
-            .json({message: 'Password and repeatPassword don\'t match.'});
+            .json({error: 'Password and repeatPassword don\'t match.'});
         }
 
         const salt = encryption.generateSalt();
@@ -26,9 +26,6 @@ module.exports = {
             username,
             hashedPass,
             salt,
-            firstName,
-            lastName,
-            profilePicture,
             roles: []
         })
         .then(() => {
@@ -38,7 +35,7 @@ module.exports = {
         .catch((e) => {
           console.error(e);
           res.status(500)
-            .json({message: 'User not created.'})
+            .json({error: 'User not created.'})
         })
     },
     login: async (req, res) => {
@@ -46,18 +43,19 @@ module.exports = {
 
         if(!username || !password){
           res.status(400)
-            .json({message: 'Please fill all fields.'});
+            .json({error: 'Please fill all fields.'});
+            return;
         }
 
         try {
             const user = await User.findOne({ username });
 
             if (!user) {
-                return res.status(404).json({message: 'User not found!'});
+                return res.status(404).json({error: 'User not found!'});
             }
 
             if (!user.authenticate(password)) {
-              return res.status(401).json({message: 'Invalid password.'});
+              return res.status(401).json({error: 'Invalid password.'});
             }
 
             const token =
@@ -75,7 +73,7 @@ module.exports = {
         } catch (e) {
           console.error(e);
             res.status(500)
-              .json({message: 'Internal server error.'});
+              .json({error: 'Internal server error.'});
         }
 
 

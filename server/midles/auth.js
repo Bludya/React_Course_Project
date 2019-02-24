@@ -14,7 +14,6 @@ module.exports = {
 	isAnonymous: (req, res, next) => {
     let token = req.token;
 
-    console.log(token);
     if(token){
       return res.status(401)
         .json({message: 'You are already logged in.'});

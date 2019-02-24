@@ -101,11 +101,9 @@ module.exports = {
   },
   getRandomQuestion: (req, res) => {
     Question.countDocuments().exec((err, count) => {
-      // Get a random entry
       let random = Math.floor(Math.random() * count)
 
-      console.log(random + " wewegewg");
-      Question.findOne().skip(random)
+      Question.findOne({approved: true}).skip(random)
         .then(user => {
           res.status(200)
             .json(user);
