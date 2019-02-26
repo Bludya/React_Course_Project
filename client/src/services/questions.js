@@ -1,6 +1,6 @@
 const serverPath = 'http://localhost:9999';
 
-export const getRandomQuestion = async () => {
-    let res = await fetch(serverPath + '/question/random').then(res => res.json());
+export const getRandomQuestion = async (tag) => {
+    let res = await fetch(serverPath + '/question/random?tag=' + tag).then(res => res.json());
     return res;
   }

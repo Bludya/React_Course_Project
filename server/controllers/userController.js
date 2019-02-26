@@ -69,7 +69,7 @@ module.exports = {
             );
 
             res.status(200)
-            .json({message: 'Login successful!', token})
+            .json({message: 'Login successful!', token, username, isAdmin: user.roles.indexOf('Admin') > -1})
         } catch (e) {
           console.error(e);
             res.status(500)

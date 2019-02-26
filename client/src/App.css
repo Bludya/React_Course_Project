@@ -1,10 +1,9 @@
 @import url('https://fonts.googleapis.com/css?family=Open+Sans');
 
-body {
-  margin: 0;
-  padding: 0;
-  font-family: 'Open Sans',
-  sans-serif;
+body{
+  padding:0 100px 100px;
+  background-color: #031634;
+  color: #CDB380;
 }
 
 [data-preview="ToastContainer"] {
@@ -25,36 +24,26 @@ body {
   height: 100%;
 }
 
-.container {
-  position: relative;
-}
+
 .App p {
   width: 20%;
   margin: 0 auto;
 }
 
-.App h1 {
-  text-align: center;
-}
-
 .App header {
    overflow: hidden;
-   background-color: #f1f1f1;
    padding: 0 50px;
-
 }
 
 .App header a {
+  color:#CDB380;
   float: left;
-  color: black;
   text-align: center;
   padding: 18px;
   text-decoration: none;
   font-size: 18px;
   line-height: 25px;
   font-weight: bold;
-
-  /*border-radius: 4px;*/
 }
 
 .App header a.logo {
@@ -63,7 +52,7 @@ body {
 }
 
 .App header a:hover, .App header a.active {
-  background-color: dodgerblue;
+  background-color: #033649;
   color: white;
 }
 
@@ -83,4 +72,31 @@ body {
   .App header-right {
     float: none;
   }
+}
+
+form {
+  display: grid;
+  width: 25%;
+  margin: 0 auto;
+}
+
+input{
+    padding: 10px;
+    margin-bottom: 20px;
+}
+
+input[type="submit"]{
+  margin:10px auto;
+  border: 2px solid #CDB380;
+  text-align: center;
+  font-size: 14px;
+  color: #CDB380;
+  border-radius: 7px;
+  background: transparent;
+  box-shadow: 2px 2px 0px 0px rgba(0,0,0,0.5);
+}
+
+input[type="submit"]:hover{
+  color: #white;
+  background: #033649;
 }

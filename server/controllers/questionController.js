@@ -46,10 +46,12 @@ module.exports = {
 
     let tagIds = await addTags(tags);
 
+    let author = req.token ? req.token.userId : null;
+
     Question.create({
       text,
       tags: tagIds,
-      author: req.token.userId
+      author
     })
     .then(()=>{
       res.status(200)
@@ -99,14 +101,35 @@ module.exports = {
           .json({message: 'No id found.'});
       }
   },
-  getRandomQuestion: (req, res) => {
-    Question.countDocuments().exec((err, count) => {
+  getRandomQuestion: async (req, res) => {
+    let tagName = req.query.tag;
+    let tag;
+
+    if(tagName){
+        tag = await Tag.findOne({name: tagName.toLowerCase()}).exec();
+
+
+      if(!tag){
+        res.status(404)
+          .json({message: 'No question with that tag.'});
+          return;
+      }
+    }
+
+    let query = {approved: true};
+
+    if(tag){
+      query.tags = tag._id;
+    }
+
+    Question.countDocuments(query).exec((err, count) => {
       let random = Math.floor(Math.random() * count)
 
-      Question.findOne({approved: true}).skip(random)
-        .then(user => {
+      Question.findOne(query).skip(random).populate('author tags')
+        .then(q => {
+
           res.status(200)
-            .json(user);
+            .json({question: q});
         })
         .catch(e=>{
           console.error(e);

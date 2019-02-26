@@ -1,9 +1,6 @@
 import React, { Component } from 'react';
-import {NavLink, Redirect} from 'react-router-dom'
-import { ToastContainer, toast } from 'react-toastify';
+import {NavLink} from 'react-router-dom'
 import './Login.css';
-
-import {login} from '../../services/auth';
 
 class Login extends Component {
   constructor(props){
@@ -14,31 +11,10 @@ class Login extends Component {
       redirect: false
     }
 
-    this.toast = props.toast;
     this.handleChange = this.handleChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleSubmit = props.handleSubmit.bind(this);
   }
 
-  handleSubmit = async (event) => {
-    event.preventDefault();
-    login({
-      username: this.state.username,
-      password: this.state.password
-    })
-      .then(res => {
-        if(res.error){
-          toast.error(res.error);
-          return;
-        }
-
-        toast.success(res.message);
-        window.sessionStorage.token = res.token;
-        this.setState({redirect: true})
-      })
-      .catch(e => {
-        console.log(e);
-      })
-  }
 
   handleChange = (event) => {
     this.setState({
@@ -49,15 +25,14 @@ class Login extends Component {
   render() {
     return (
       <div className="Login">
-        {this.state.redirect ? <Redirect to='/' /> : ''}
-        <h1>Login</h1>
-        <form onSubmit={this.handleSubmit}>
+        <h1 className='text-center'>Login</h1>
+        <form onSubmit={(event)=>this.handleSubmit(event, this.state)}>
           <label htmlFor="usernameLogin">Username</label>
           <input type="text" id="usernameLogin" value={this.state.username} onChange={this.handleChange} name="username" placeholder="Username"/>
           <label htmlFor="passwordLogin">Password</label>
           <input type="password" id="passwordLogin" value={this.state.password} onChange={this.handleChange} name="password" placeholder="******"/>
           <input type="submit" value="Login"/>
-          <span className='register'>
+          <span>
             <p>or</p>
             <NavLink  exact to="/register">Register</NavLink>
           </span>

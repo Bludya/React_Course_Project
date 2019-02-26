@@ -3,13 +3,13 @@ import {Link, NavLink} from 'react-router-dom';
 
 let Header = (props) =>{
   return (
-    <header>
-      <Link to="/" className="logo" >AskAway</Link>
+    <header className="container">
+      <Link to="/" className="logo " >AskAway</Link>
       <div className="header-right">
         <NavLink exact to="/">Home</NavLink>
-          {props.username ?
+          {props.loggedIn ?
             (<span>
-              <NavLink exact to="#">Welcome {props.username}!</NavLink>
+              <NavLink exact to="/profile">My Profile</NavLink>
               <NavLink exact to="/logout">Logout</NavLink>
             </span>
             ) :

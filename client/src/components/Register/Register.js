@@ -1,8 +1,5 @@
 import React, { Component } from 'react';
-import {Redirect} from 'react-router-dom'
-import { ToastContainer, toast } from 'react-toastify';
 import './Register.css';
-import {register} from '../../services/auth';
 
 class Register extends Component {
 
@@ -19,31 +16,8 @@ class Register extends Component {
 
     this.toast = props.toast;
     this.handleChange = this.handleChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
   }
 
-  handleSubmit = async (event) => {
-    event.preventDefault();
-
-    register({
-      username: this.state.username,
-      email: this.state.email,
-      password: this.state.password,
-      repeatPassword: this.state.repeatPassword
-    })
-      .then(res => {
-        if(res.error){
-          toast.error(res.error);
-          return;
-        }
-
-        toast.success(res.message);
-        this.setState({redirect: true})
-      })
-      .catch(e => {
-        console.log(e);
-      })
-  }
 
   handleChange = (event) => {
     this.setState({
@@ -54,10 +28,8 @@ class Register extends Component {
   render() {
     return (
       <div className="Register">
-        {this.state.redirect ? <Redirect to='/login' /> : ''}
-        <ToastContainer autoClose={2000} closeButton={false}/>
-        <h1>Register</h1>
-        <form onSubmit={this.handleSubmit}>
+        <h1 className='text-center'>Register</h1>
+        <form onSubmit={(event) => this.props.handleSubmit(event, this.state)}>
           <label htmlFor="username">Username</label>
           <input type="text" id="username" value={this.state.username} name="username" onChange={this.handleChange} placeholder="Username" />
           <label htmlFor="email">Email</label>

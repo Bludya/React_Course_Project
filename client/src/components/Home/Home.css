@@ -1,42 +1,37 @@
-.Home {
-  text-align: center;
+.Home{
+  margin-top: 50px;
 }
 
-.Home ul.movies {
-  display: flex;
-  margin: 0 auto;
-  width: 50%;
-  justify-content: space-evenly;
-  flex-wrap: wrap;
+.tag-input-group{
+  margin-bottom: 50px;
+  color: #036564;
 }
 
-.Home li.movie {
-  display: grid;
+label{
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  text-align: right;
 }
 
-.Home .trailer {
-  margin: 0 auto;
+.tag-input{
+  height: 30px;
+  background: #031634;
+  border: none;
+  border-bottom: 2px solid #036564;
+  color: #036564;
 }
 
-.Home img {
-	margin: 0 auto;
+.question{
+  cursor:pointer;
 }
 
-button{  
-  width: 60%;
-  margin:0 auto;
-  border: 2px solid dodgerblue;
-  text-align: center;  
-  font-size: 14px;
-  background: dodgerblue;
-  color: white;
-  border-radius: 7px;
-  margin-top: 20px; 
-  box-shadow: 2px 2px 0px 0px rgba(0,0,0,0.5); 
-  padding: 10px 20px;
+.question .author{
+  text-align: right;
+  padding-left: 20px;
+  font-size: 12px;
 }
 
-button:hover{
-  color: dodgerblue;
-  background: transparent;
+#tag{
+  font-size: 11px;
 }
