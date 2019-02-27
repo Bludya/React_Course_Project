@@ -82,6 +82,36 @@ module.exports = {
             .json({message: 'Question not edited.'})
       })
   },
+  postAnswer: async (req, res) => {
+      let questionId = req.params.id;
+      let answerBody = req.body;
+
+      if(!questionId){
+        res.status(400)
+          .json({message: 'No id found.'})
+      }
+
+      if(!answerBody){
+        res.status(400)
+          .json({message: 'No answer found.'})
+      }
+
+      Question.findById(questionId)
+      .then(q => {
+        Answer.create(answerBody)
+          .then(a => {
+            //TODO: Add user
+
+
+            q.answers.push(a._id);
+
+          })
+      })
+      .catch(e => {
+          res.status(500)
+            .json({message: 'Answer not added.'})
+      })
+  },
   getOneById: async (req, res) => {
     let id = req.params.id;
 
@@ -125,7 +155,7 @@ module.exports = {
     Question.countDocuments(query).exec((err, count) => {
       let random = Math.floor(Math.random() * count)
 
-      Question.findOne(query).skip(random).populate('author tags')
+      Question.findOne(query).skip(random).populate('author tags answers')
         .then(q => {
 
           res.status(200)
