@@ -58,7 +58,7 @@ module.exports = {
               return res.status(401).json({error: 'Invalid password.'});
             }
 
-            const token =
+            const token ='Bearer ' + 
             jwt.sign(
               {
                 username,

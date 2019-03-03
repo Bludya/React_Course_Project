@@ -10,10 +10,14 @@ import Header from './components/Header.js';
 const Home = lazy(() => import('./components/Home/Home'));
 const Register = lazy(() => import('./components/Register/Register'));
 const Login = lazy(() => import('./components/Login/Login'));
-
+const Profile = lazy(() => import('./components/Profile/Profile'));
+const AdminPanel = lazy(() => import('./components/AdminPanel/AdminPanel'));
 const NotFound = lazy(() => import('./components/Error/NotFound'));
 // const UnauthorizedPage = lazy(() => import('./components/Error/UnauthorizedPage'));
 // const ServerError = lazy(() => import('./components/Error/ServerError'));
+
+const TokenContext = React.createContext(null);
+const TokenProvider = TokenContext.Provider;
 
 class App extends Component {
 
@@ -24,13 +28,15 @@ class App extends Component {
       loggedIn: false,
       isAdmin: false
     }
+
+    window.sessionStorage.clear();
   }
 
   componentDidMount = () => {
     this.setState({
-      token: window.sessionStorage.token,
-      username: window.sessionStorage.username,
-      isAdmin: window.sessionStorage.isAdmin
+      token: '',
+      username: '',
+      isAdmin: ''
     })
   }
 
@@ -62,8 +68,8 @@ class App extends Component {
 
         toast.success(res.message);
 
+        window.sessionStorage.token = res.token;
         this.setState({
-          token: res.token,
           loggedIn: true,
           isAdmin: res.isAdmin
         })
@@ -87,21 +93,26 @@ class App extends Component {
 
   render() {
     return (
-      <div className="App">
-        <ToastContainer autoClose={2000} position={"top-center"} closeButton={false}/>
-        <Router>
-          <Suspense fallback={<span>Loading...</span>}>
-            <Header loggedIn={this.state.loggedIn}  isAdmin={this.state.isAdmin} />
-            <Switch>
-              <Route path='/' component={() => <Home fetchMovies={this.fetchMovies}/>} props={this.state.username} exact />
-              <Route path='/login'  component={() => this.state.loggedIn ?  <Redirect to='/' />  : <Login toast={toast} handleSubmit={this.handleLogin} />} exact />
-              <Route path='/register' component={() => this.state.loggedIn ?  <Redirect to='/' />  : <Register toast={toast} handleSubmit={this.handleRegister} />}  exact />
-              <Route path='/logout' component={this.logout} />
-              <Route component={() => <NotFound />}/>
-            </Switch>
-          </Suspense>
-        </Router>
-      </div>
+      <TokenProvider value={this.state.token}>
+        <div className="App">
+          <ToastContainer autoClose={2000} position={"top-center"} closeButton={false}/>
+          <Router>
+            <Suspense fallback={<span>Loading...</span>}>
+              <Header loggedIn={this.state.loggedIn}  isAdmin={this.state.isAdmin} />
+              <Switch>
+                <Route path='/' component={() => <Home toast={toast}/>} props={this.state.username} exact />
+                <Route path='/login'  component={() => this.state.loggedIn ?  <Redirect to='/' />  : <Login toast={toast} handleSubmit={this.handleLogin} />} exact />
+                <Route path='/register' component={() => this.state.loggedIn ?  <Redirect to='/' />  : <Register toast={toast} handleSubmit={this.handleRegister} />}  exact />
+                <Route path='/logout' component={this.logout} />
+
+                <Route path='/profile' component={() => this.state.loggedIn ? <Profile /> : <Redirect to='/' />} exact />
+                <Route path='/admin-panel' component={() => this.state.isAdmin ? <AdminPanel toast={toast}/> : <Redirect to='/' />} exact />
+                <Route component={() => <NotFound />}/>
+              </Switch>
+            </Suspense>
+          </Router>
+        </div>
+      </TokenProvider>
     );
   }
 }

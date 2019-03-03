@@ -1,21 +1,9 @@
-const serverPath = 'http://localhost:9999';
+import {post} from './crud';
 
 export const login = async (data) => {
-    return await fetch(serverPath + '/auth/login',{
-      method: 'POST',
-      headers: {
-            "Content-Type": "application/json"
-        },
-      body: JSON.stringify(data)
-    }).then(res => res.json());
-  }
+  return post('/auth/login', data);
+}
 
 export const register = async (data) => {
-    return await fetch(serverPath + '/auth/register',{
-      method: 'POST',
-      headers: {
-            "Content-Type": "application/json"
-        },
-      body: JSON.stringify(data)
-    }).then(res => res.json());
-  }
+  return post('/auth/register', data);
+}

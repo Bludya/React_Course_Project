@@ -6,7 +6,7 @@ const questionSchema = new Schema({
   ups: {type: Number, min: 0, default: 0},
   downs: {type: Number, min: 0, default: 0},
   tags: [{type: Schema.Types.ObjectId, ref: 'Tag'}],
-  answers: [{type: Schema.Types.ObjectId, ref: 'Comment'}],
+  answers: [{type: Schema.Types.ObjectId, ref: 'Answer'}],
   author: {type: Schema.Types.ObjectId, ref: 'User'}
 })
 

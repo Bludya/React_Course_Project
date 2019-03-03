@@ -1,6 +1,7 @@
 const Question = require('../models/Question');
 const Tag = require('../models/Tag');
-
+const Answer = require('../models/Answer');
+const User = require('../models/User');
 
 async function addTags(tags){
   let tagIds = [];
@@ -53,7 +54,11 @@ module.exports = {
       tags: tagIds,
       author
     })
-    .then(()=>{
+    .then((q)=>{
+      User.findById(author)
+        .then(user => {
+          user.questions.push(q._id);
+        });
       res.status(200)
         .json({message: 'Question added.'});
     })
@@ -96,18 +101,35 @@ module.exports = {
           .json({message: 'No answer found.'})
       }
 
+      let author = req.token ? req.token.userId : null;
+      console.log("Author is: " + author);
+      answerBody.author = author;
+
       Question.findById(questionId)
       .then(q => {
+        answerBody.question = q._id;
         Answer.create(answerBody)
           .then(a => {
-            //TODO: Add user
-
-
+            User.findById(author)
+              .then(user => {
+                if(user){
+                  user.answers.push(a._id);
+                  user.save();
+                }
+              });
             q.answers.push(a._id);
-
+            q.save();
+            res.status(200)
+              .json({message: 'Answer added successfully.', answer: a});
+          })
+          .catch(e => {
+              console.log(e);
+                res.status(500)
+                  .json({message: 'Answer not added.'})
           })
       })
       .catch(e => {
+        console.log(e);
           res.status(500)
             .json({message: 'Answer not added.'})
       })
@@ -155,7 +177,7 @@ module.exports = {
     Question.countDocuments(query).exec((err, count) => {
       let random = Math.floor(Math.random() * count)
 
-      Question.findOne(query).skip(random).populate('author tags answers')
+      Question.findOne(query).skip(random).populate('author tags')
         .then(q => {
 
           res.status(200)
@@ -209,6 +231,66 @@ module.exports = {
       .then(questions => {
         res.status(200)
           .json(questions);
+      })
+      .catch(e => {
+        console.error(e);
+        res.status(500)
+          .json({message: 'Server error.'})
+      })
+  },
+  getQuestionsByUser: (req, res) => {
+    let userId = req.token ? req.token.userId : null;
+
+    Question.find({'author': userId}).populate('author tags answers')
+      .then(questions => {
+        res.status(200)
+          .json(questions);
+      })
+      .catch(e => {
+        console.error(e);
+        res.status(500)
+          .json({message: 'Server error.'})
+      })
+  },
+  getAnswersByQuestion: (req, res) => {
+    let questionId = req.params.id;
+
+    if(!questionId){
+      res.status(404)
+        .json({'message': 'No question Id given.'})
+    }
+
+    Answer.find({'question': questionId})
+      .then(answers => {
+        res.status(200)
+          .json(answers);
+      })
+      .catch(e => {
+        console.error(e);
+        res.status(500)
+          .json({message: 'Server error.'})
+      })
+  },
+  getAnswersByUser: (req, res) => {
+    let userId = req.token ? req.token.userId : null;
+
+    Answer.find({'author': userId})
+      .then(answers => {
+        res.status(200)
+          .json(answers);
+      })
+      .catch(e => {
+        console.error(e);
+        res.status(500)
+          .json({message: 'Server error.'})
+      })
+  },
+  deleteAnswer: (req, res) => {
+    let id = req.params.id;
+    console.log(id);
+    Answer.findOneAndDelete({'_id':id})
+      .then(() => {
+        res.json({'message': 'Answer ' + id + ' deleted successfully.'})
       })
       .catch(e => {
         console.error(e);

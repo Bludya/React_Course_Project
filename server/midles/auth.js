@@ -22,7 +22,14 @@ module.exports = {
     next();
   },
   isAdmin: (req, res, next) => {
-    let userId = req.token.userId;
+    let token = req.token;
+
+    if(!token){
+      return res.status(401)
+        .json({message: 'No or invalid token.'});
+    }
+
+    let userId = token.userId;
 
     User.findById(userId)
       .then(user => {
