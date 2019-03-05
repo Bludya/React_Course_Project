@@ -1,9 +1,19 @@
 import React, { Component, Fragment } from 'react';
-import {getRandomQuestion, postAnswer, deleteAnswer, getAnswers} from '../../services/questions';
+import {
+  getRandomQuestion,
+  getQuestionById,
+  postAnswer,
+  deleteAnswer,
+  getAnswers,
+  rateAnswer,
+  rateQuestion
+} from '../../services/questions';
+
 import './Home.css';
 import Question from '../Question/Question';
 import Answer from '../Answer/Answer';
 import AnswerForm from './AnswerForm';
+import QuestionButtons from './QuestionButtons';
 
 class Home extends Component {
   constructor(props){
@@ -15,13 +25,17 @@ class Home extends Component {
       message:'Click here for a question.',
       showAnswers: false,
       showAnswerForm: false,
+      isAdmin: props.isAdmin
     }
 
-    this.toast = props.toast.bind(this);
     this.getQuestion = this.getQuestion.bind(this);
     this.postAnswer = this.postAnswer.bind(this);
     this.handleChange = this.handleChange.bind(this);
+    this.showAnswers = this.showAnswers.bind(this);
+    this.showAnswerForm = this.showAnswerForm.bind(this);
     this.deleteAnswerMethod = this.deleteAnswerMethod.bind(this);
+    this.rateAnswerMethod = this.rateAnswerMethod.bind(this);
+    this.rateQuestionMethod = this.rateQuestionMethod.bind(this);
   }
 
   handleChange = (event) => {
@@ -72,7 +86,6 @@ class Home extends Component {
   deleteAnswerMethod = (answerId) => {
     deleteAnswer(answerId)
       .then(res => {
-        console.log(res);
         if(this.state.showAnswers){
           this.loadAnswers();
         }
@@ -91,11 +104,34 @@ class Home extends Component {
     this.setState(stateChange);
   }
 
+  showAnswerForm = () => this.setState({showAnswerForm: !this.state.showAnswerForm});
+
   loadAnswers = async () => {
     getAnswers(this.state.question._id)
       .then(answers => {
         this.setState({answers});
       })
+  }
+
+  rateAnswerMethod = (answerId, rating) => {
+    if(window.sessionStorage.token && answerId && rating){
+      rateAnswer(answerId, rating)
+        .then(a => {
+          if(this.state.showAnswers){
+            this.loadAnswers();
+          }
+        })
+    }
+  }
+
+  rateQuestionMethod = (rating) => {
+    const questionId = this.state.question._id;
+    if(window.sessionStorage.token && questionId && rating){
+      rateQuestion(questionId, rating)
+        .then(res => {
+            this.setState({question: res.question})
+        })
+    }
   }
 
   render() {
@@ -106,23 +142,12 @@ class Home extends Component {
           <input type="text" id="tag-input" className="tag-input" value={this.state.tag} name="tag" onChange={this.handleChange} placeholder="tag"/>
         </div>
         <div className="d-flex flex-column justify-content-center">
-          <div className="row question-holder justify-content-center" onClick={this.getQuestion} >
-            <Question entity={this.state.question} message={this.state.message}/>
-          </div>
           {this.state.question ? (
             <Fragment>
-              <div id="buttons-container" className="flex-d justify-content-center">
-                <span className="button"
-                      id="show-answer-form"
-                      onClick={() => this.setState({showAnswerForm: !this.state.showAnswerForm})}>
-                  <i className="fa fa-comment" aria-hidden="true"></i>
-                </span>
-                <span className="button"
-                      id="show-answers"
-                      onClick={this.showAnswers}>
-                  <i className="fa fa-comments" aria-hidden="true"></i>
-                </span>
+              <div className="question-holder">
+                <Question entity={this.state.question} getQuestionMethod={this.getQuestion} rateQuestionMethod={this.rateQuestionMethod} message={this.state.message}/>
               </div>
+              <QuestionButtons thumbsUp={this.state.question.ups.length} thumbsDown={this.state.question.downs.length} showAnswers={this.showAnswers} showAnswerForm={this.showAnswerForm} rateQuestionMethod={this.rateQuestionMethod}/>
               { this.state.showAnswerForm ?
                 (<div className="answer-form row">
                   <AnswerForm questionId = {this.state.question._id} submitHandler={this.postAnswer}/>
@@ -131,11 +156,16 @@ class Home extends Component {
               {
                 this.state.showAnswers ?
                 (<div className="answers justify-content-center">
-                  {this.state.answers.map(a => <Answer deleteAnswerMethod={this.deleteAnswerMethod} entity={a} key={a._id}/>)}
+                  {this.state.answers.map(a => <Answer isAdmin={this.state.isAdmin} rateAnswerMethod={this.rateAnswerMethod} deleteAnswerMethod={this.deleteAnswerMethod} entity={a} key={a._id}/>)}
                 </div>) : ''
               }
 
-            </Fragment>) : ''
+            </Fragment>) :
+            (
+              <div className="question-holder row justify-content-center " onClick={this.getQuestion}>
+                <h1 className="question">{this.state.message}</h1>
+              </div>
+            )
           }
         </div>
       </div>

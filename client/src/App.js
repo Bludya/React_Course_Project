@@ -16,8 +16,6 @@ const NotFound = lazy(() => import('./components/Error/NotFound'));
 // const UnauthorizedPage = lazy(() => import('./components/Error/UnauthorizedPage'));
 // const ServerError = lazy(() => import('./components/Error/ServerError'));
 
-const TokenContext = React.createContext(null);
-const TokenProvider = TokenContext.Provider;
 
 class App extends Component {
 
@@ -93,16 +91,15 @@ class App extends Component {
 
   render() {
     return (
-      <TokenProvider value={this.state.token}>
         <div className="App">
           <ToastContainer autoClose={2000} position={"top-center"} closeButton={false}/>
           <Router>
             <Suspense fallback={<span>Loading...</span>}>
               <Header loggedIn={this.state.loggedIn}  isAdmin={this.state.isAdmin} />
               <Switch>
-                <Route path='/' component={() => <Home toast={toast}/>} props={this.state.username} exact />
-                <Route path='/login'  component={() => this.state.loggedIn ?  <Redirect to='/' />  : <Login toast={toast} handleSubmit={this.handleLogin} />} exact />
-                <Route path='/register' component={() => this.state.loggedIn ?  <Redirect to='/' />  : <Register toast={toast} handleSubmit={this.handleRegister} />}  exact />
+                <Route path='/' component={() => <Home isAdmin={this.state.isAdmin}/>} props={this.state.username} exact />
+                <Route path='/login'  component={() => this.state.loggedIn ?  <Redirect to='/' />  : <Login handleSubmit={this.handleLogin} />} exact />
+                <Route path='/register' component={() => this.state.loggedIn ?  <Redirect to='/' />  : <Register handleSubmit={this.handleRegister} />}  exact />
                 <Route path='/logout' component={this.logout} />
 
                 <Route path='/profile' component={() => this.state.loggedIn ? <Profile /> : <Redirect to='/' />} exact />
@@ -112,7 +109,6 @@ class App extends Component {
             </Suspense>
           </Router>
         </div>
-      </TokenProvider>
     );
   }
 }

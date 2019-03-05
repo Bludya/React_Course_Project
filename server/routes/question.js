@@ -11,6 +11,8 @@ const {
   getAnswersByQuestion,
   getAnswersByUser,
   deleteAnswer,
+  rateAnswer,
+  rateQuestion,
 } = require('../controllers/questionController');
 const auth = require('../midles/auth');
 const router = require('express').Router();
@@ -26,6 +28,8 @@ router.get('/answers/:id', getAnswersByQuestion);
 
 router.post('/add', postQuestion);
 router.post('/answer/:id', postAnswer);
+router.post('/answer/rate/:id', auth.isAuthed, rateAnswer);
+router.post('/rate/:id', auth.isAuthed, rateQuestion);
 
 router.delete('/answer/delete/:id', auth.isAdmin, deleteAnswer);
 

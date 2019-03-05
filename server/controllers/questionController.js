@@ -7,7 +7,7 @@ async function addTags(tags){
   let tagIds = [];
 
   if(tags && Array.isArray(tags)){
-    for(let tagName in tags){
+    for(let tagName of tags){
       try{
         let tag = await Tag.findOne({name: tagName.toLowerCase()}).exec();
 
@@ -261,6 +261,7 @@ module.exports = {
     }
 
     Answer.find({'question': questionId})
+      .populate('author')
       .then(answers => {
         res.status(200)
           .json(answers);
@@ -287,12 +288,94 @@ module.exports = {
   },
   deleteAnswer: (req, res) => {
     let id = req.params.id;
-    console.log(id);
     Answer.findOneAndDelete({'_id':id})
-      .then(() => {
+      .then((a) => {
+        User.findById(a.author)
+          .then(u =>{
+            u.answers.remove(a._id);
+            u.save();
+          })
+        Question.findById(a.question)
+          .then(q =>{
+            q.answers.remove(a._id);
+            q.save();
+          })
         res.json({'message': 'Answer ' + id + ' deleted successfully.'})
       })
       .catch(e => {
+        console.error(e);
+        res.status(500)
+          .json({message: 'Server error.'})
+      })
+  },
+  rateAnswer: (req, res) => {
+    let answerId = req.params.id;
+    let rate = req.body.rating;
+    let userId = req.token ? req.token.userId : null;
+
+    Answer.findById(answerId)
+      .then(a => {
+        if(!a){
+          res.status(404)
+            .json({message: 'Answer not found.'});
+        }
+        if(rate === 'up'){
+          if(a.ups.indexOf(userId) < 0){
+            a.downs.remove(userId);
+            a.ups.push(userId);
+          }
+        }else {
+          if(a.downs.indexOf(userId) < 0){
+            a.downs.push(userId);
+            a.ups.remove(userId);
+          }
+        }
+
+        Answer.findByIdAndUpdate(answerId, a);
+        res.status(200)
+          .json({message:'Answer rated.', answer: a});
+      }).catch(e => {
+        console.error(e);
+        res.status(500)
+          .json({message: 'Server error.'})
+      })
+  },
+  rateQuestion: (req, res) => {
+    let questionId = req.params.id;
+    let rate = req.body.rating;
+    let userId = req.token ? req.token.userId : null;
+
+    Question.findById(questionId).populate('author tags')
+      .then(q => {
+        if(!q){
+          res.status(404)
+            .json({message: 'Question not found.'});
+        }
+        if(rate === 'up'){
+          if(q.ups.indexOf(userId) < 0){
+            q.downs.remove(userId);
+            q.ups.push(userId);
+          }
+        }else {
+          if(q.downs.indexOf(userId) < 0){
+            q.downs.push(userId);
+            q.ups.remove(userId);
+          }
+        }
+
+        console.log(q.ups);
+        console.log(q.downs);
+        q.save({ups:{}})
+          .then(q => {
+            console.log(q);
+          })
+          .catch(e => {
+            console.log(e);
+          })
+
+        res.status(200)
+          .json({message:'Question rated.', question: q});
+      }).catch(e => {
         console.error(e);
         res.status(500)
           .json({message: 'Server error.'})
