@@ -11,6 +11,7 @@ const Question = (props) =>(
         }
       </div>
       <div className="author">By: {props.entity.author ? props.entity.author.username : 'Anonymous'}</div>
+      {props.addOnComponent}
     </div>
   </Fragment>
 )

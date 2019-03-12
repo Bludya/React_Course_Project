@@ -10,8 +10,8 @@ import {
 } from '../../services/questions';
 
 import './Home.css';
-import Question from '../Question/Question';
-import Answer from '../Answer/Answer';
+import Question from '../Entities/Question';
+import Answer from '../Entities/Answer';
 import AnswerForm from './AnswerForm';
 import QuestionButtons from './QuestionButtons';
 

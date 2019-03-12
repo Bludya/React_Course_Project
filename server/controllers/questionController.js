@@ -4,7 +4,6 @@ const Answer = require('../models/Answer');
 const User = require('../models/User');
 
 async function addTags(tags){
-  let tagIds = [];
 
   if(tags && Array.isArray(tags)){
     for(let tagName of tags){
@@ -16,7 +15,7 @@ async function addTags(tags){
           continue;
         }
 
-        tag = await Tag.create({name: tagName.toLowerCase()}).exec();
+        tag = await Tag.create({name: tagName.toLowerCase()});
         tagIds.push(tag);
       }catch(e){
         console.error(e);
@@ -331,7 +330,8 @@ module.exports = {
           }
         }
 
-        Answer.findByIdAndUpdate(answerId, a);
+        a.save();
+
         res.status(200)
           .json({message:'Answer rated.', answer: a});
       }).catch(e => {
@@ -340,7 +340,7 @@ module.exports = {
           .json({message: 'Server error.'})
       })
   },
-  rateQuestion: (req, res) => {
+  rateQuestion: async (req, res) => {
     let questionId = req.params.id;
     let rate = req.body.rating;
     let userId = req.token ? req.token.userId : null;
@@ -351,10 +351,11 @@ module.exports = {
           res.status(404)
             .json({message: 'Question not found.'});
         }
+
         if(rate === 'up'){
           if(q.ups.indexOf(userId) < 0){
-            q.downs.remove(userId);
-            q.ups.push(userId);
+           q.downs.remove(userId);
+           q.ups.push(userId);
           }
         }else {
           if(q.downs.indexOf(userId) < 0){
@@ -363,18 +364,31 @@ module.exports = {
           }
         }
 
-        console.log(q.ups);
-        console.log(q.downs);
-        q.save({ups:{}})
-          .then(q => {
-            console.log(q);
-          })
-          .catch(e => {
-            console.log(e);
-          })
+
+        q.save();
 
         res.status(200)
           .json({message:'Question rated.', question: q});
+      }).catch(e => {
+        console.error(e);
+        res.status(500)
+          .json({message: 'Server error.'})
+      })
+  },
+  approveQuestion: (req, res) => {
+    let questionId = req.params.id;
+
+    Question.findById(questionId)
+      .then(q => {
+        if(!q){
+          res.status(404)
+            .json({message: 'Question not found.'});
+        }
+        q.approved = true;
+        q.save();
+
+        res.status(200)
+          .json({message:'Question aproved.', question: q});
       }).catch(e => {
         console.error(e);
         res.status(500)

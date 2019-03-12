@@ -58,7 +58,7 @@ module.exports = {
               return res.status(401).json({error: 'Invalid password.'});
             }
 
-            const token ='Bearer ' + 
+            const token ='Bearer ' +
             jwt.sign(
               {
                 username,
@@ -77,5 +77,50 @@ module.exports = {
         }
 
 
+    },
+    getAllUsers: (req, res) => {
+      User.find()
+        .then(users => {
+          res.status(200)
+            .json(users);
+        })
+        .catch (e => {
+          console.error(e);
+            res.status(500)
+              .json({error: 'Internal server error.'});
+        })
+    },
+    banUser: (req, res) => {
+      let userId = req.params.id;
+      let banState = req.body.banState;
+
+      User.findById(userId)
+        .then(user => {
+          user.banned = banState;
+          user.save();
+
+          res.status(200)
+            ,json({message: `User ${user.username} banned successfully.`, user});
+        })
+        .catch (e => {
+          console.error(e);
+            res.status(500)
+              .json({error: 'Internal server error.'});
+        });
+    },
+    makeAdmin: (req, res) => {
+      let userId = req.params.id;
+
+      User.findById(userId)
+        .then(user => {
+          user.roles.push('Admin');
+            res.status(200)
+              ,json({message: `User ${user.username} made Admin successfully.`, user});
+        })
+        .catch (e => {
+          console.error(e);
+            res.status(500)
+              .json({error: 'Internal server error.'});
+        })
     }
 };

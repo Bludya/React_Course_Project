@@ -7,7 +7,8 @@ const userSchema = new Schema({
     salt: { type: String, required: true },
     roles: [{ type: String, default: 'User'}],
     questions: [{type: Schema.Types.ObjectId, ref: 'Question'}],
-    answers: [{type: Schema.Types.ObjectId, ref: 'Answer'}]
+    answers: [{type: Schema.Types.ObjectId, ref: 'Answer'}],
+    banned: {type: Boolean, default: 'false'}
 });
 
 userSchema.method({

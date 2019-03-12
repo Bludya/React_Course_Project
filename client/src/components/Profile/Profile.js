@@ -1,8 +1,8 @@
 import React, {Component} from 'react';
 import {postQuestion, getQuestionsByUser, getAnswersByUser} from '../../services/questions';
 
-import Question from '../Question/Question';
-import Answer from '../Answer/Answer';
+import Question from '../Entities/Question';
+import Answer from '../Entities/Answer';
 import ProfileList from './ProfileList';
 import AddQuestion from './AddQuestion';
 

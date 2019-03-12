@@ -103,7 +103,7 @@ class App extends Component {
                 <Route path='/logout' component={this.logout} />
 
                 <Route path='/profile' component={() => this.state.loggedIn ? <Profile /> : <Redirect to='/' />} exact />
-                <Route path='/admin-panel' component={() => this.state.isAdmin ? <AdminPanel toast={toast}/> : <Redirect to='/' />} exact />
+                <Route path='/admin-panel' component={() => this.state.isAdmin ? <AdminPanel /> : <Redirect to='/' />} exact />
                 <Route component={() => <NotFound />}/>
               </Switch>
             </Suspense>

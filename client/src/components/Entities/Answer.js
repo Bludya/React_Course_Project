@@ -26,6 +26,7 @@ const Answer = (props) => (
           onClick={() => props.rateAnswerMethod(props.entity._id, 'down')}>
       <i className="fa fa-thumbs-down" aria-hidden="true" >{props.entity.downs.length}</i>
     </span>
+    {props.addOnComponent}
   </div>
 )
 

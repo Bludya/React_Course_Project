@@ -1,11 +1,19 @@
-import {get, post, del} from './crud';
+import {get, post, put, del} from './crud';
 
 export const getRandomQuestion = (tag) => {
   return get('/question/random?tag=' + tag);
 }
 
 export const getQuestionById = (id) => {
-  return get('/questions/find/:id');
+  return get('/question/find/:id');
+}
+
+export const getUnapprovedQuestions = () => {
+  return get('/question/unapproved');
+}
+
+export const approveQuestionService = (id) => {
+  return put('/question/approve/' + id);
 }
 
 export const postAnswer = (text, questionId) => {
@@ -24,8 +32,16 @@ export const getAnswersByUser = () => {
   return get('/question/answers/user');
 }
 
+export const getHiddenAnswers = () => {
+  return get('/question/answers/hidden')
+}
+
+export const hiseAnswerService = (id) => {
+  return get('/question/answers/hide/' + id);
+}
+
 export const deleteAnswer = (answerId) => {
-  return del('/question/answer/delete/' + answerId);
+  return del('/question/answers/delete/' + answerId);
 }
 
 export const getAnswers = (questionId) => {
@@ -33,9 +49,9 @@ export const getAnswers = (questionId) => {
 }
 
 export const rateAnswer = (answerId, rating) => {
-  return post('/question/answer/rate/' + answerId, {rating});
+  return put('/question/answers/rate/' + answerId, {rating});
 }
 
 export const rateQuestion = (questionId, rating) => {
-  return post('/question/rate/' + questionId, {rating});
+  return put('/question/rate/' + questionId, {rating});
 }

@@ -19,6 +19,10 @@ export const get = (path) => {
   return fetchData(path, 'GET');
 }
 
+export const put = (path, data) => {
+  return fetchData(path, 'PUT', data);
+}
+
 export const del = (path) => {
   return fetchData(path, 'DELETE');
 }
