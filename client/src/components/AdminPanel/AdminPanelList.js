@@ -7,7 +7,6 @@ const AdminPanelList = (props) => {
   return(
     <div className="entity-list">
       {props.entities.map(e => (
-        <Fragment>
           <Entity key={e._id} entity={e}
           addOnComponent=
           {entityType === 'question' ?
@@ -20,7 +19,6 @@ const AdminPanelList = (props) => {
             )
           }
           />
-        </Fragment>
       ))}
     </div>
   )

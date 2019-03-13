@@ -1,4 +1,5 @@
 import {get, post, put} from './crud';
+const {safe_tags} = require('./defensiveFunctions');
 
 export const login = async (data) => {
   return post('/auth/login', data);
@@ -13,9 +14,12 @@ export const getUsersService = () => {
 }
 
 export const userBanService = (id, banState) => {
-  return put('/auth/ban/' + id, banState);
+  id = safe_tags(id);
+  banState = safe_tags(banState);
+  return put('/auth/ban/' + id, {banState: banState});
 }
 
 export const makeAdminService = (id) => {
-  return put('/auth/make-admin/');
+  id = safe_tags(id);
+  return put('/auth/make-admin/' + id);
 }

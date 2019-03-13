@@ -40,6 +40,7 @@ class App extends Component {
 
   handleRegister = async (event, data) => {
     event.preventDefault();
+    console.log(data);
     register(data)
       .then(res => {
         if(res.error){

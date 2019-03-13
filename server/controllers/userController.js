@@ -94,13 +94,14 @@ module.exports = {
       let userId = req.params.id;
       let banState = req.body.banState;
 
+      console.log(banState);
       User.findById(userId)
         .then(user => {
           user.banned = banState;
           user.save();
 
           res.status(200)
-            ,json({message: `User ${user.username} banned successfully.`, user});
+            .json({message: `User ${user.username} banned successfully.`, user});
         })
         .catch (e => {
           console.error(e);
@@ -113,9 +114,16 @@ module.exports = {
 
       User.findById(userId)
         .then(user => {
-          user.roles.push('Admin');
+          if(user.roles.indexOf('Admin') < 0){
+            user.roles.push('Admin');
+            user.save();
+
             res.status(200)
-              ,json({message: `User ${user.username} made Admin successfully.`, user});
+              .json({message: `User ${user.username} made Admin successfully.`, user});
+          }else {
+            res.status(200)
+              .json({message: `User ${user.username} is already admin.`, user});
+          }
         })
         .catch (e => {
           console.error(e);

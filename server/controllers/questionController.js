@@ -4,7 +4,8 @@ const Answer = require('../models/Answer');
 const User = require('../models/User');
 
 async function addTags(tags){
-
+  let tagIds = [];
+  
   if(tags && Array.isArray(tags)){
     for(let tagName of tags){
       try{
@@ -29,6 +30,8 @@ async function addTags(tags){
 module.exports = {
   postQuestion: async (req, res) => {
     let {text, tags} = req.body;
+    console.log(text);
+    console.log(tags);
 
     if(!text || text.length < 3){
       res.status(400)

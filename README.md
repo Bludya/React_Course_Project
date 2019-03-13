@@ -21,4 +21,9 @@ The project for the course ReactJS February2019 in SoftUni.
   - Едитване на листи с въпроси и махане на въпроси по тагове.
   - Списък с неодобрени въпроси и възможност за одобряването им.                check
   - Списък с юзъри.                                                             check
+  - Search po username
   - Бутони за банване и правене на админ.
+
+4. Messaging & error handling
+5. Ataki defens
+6. 

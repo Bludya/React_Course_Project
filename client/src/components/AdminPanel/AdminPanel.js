@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {getUnapprovedQuestions, getHiddenAnswers, approveQuestionService} from '../../services/questions';
+import {getUnapprovedQuestions, approveQuestionService} from '../../services/questions';
 import {getUsersService, userBanService, makeAdminService} from '../../services/auth';
 
 import Question from '../Entities/Question';

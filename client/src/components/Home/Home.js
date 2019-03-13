@@ -1,7 +1,6 @@
 import React, { Component, Fragment } from 'react';
 import {
   getRandomQuestion,
-  getQuestionById,
   postAnswer,
   deleteAnswer,
   getAnswers,
