@@ -18,12 +18,11 @@ The project for the course ReactJS February2019 in SoftUni.
   - Списък с неговите отговори                                                  check
 
 3. Админ панел - за админи:
-  - Едитване на листи с въпроси и махане на въпроси по тагове.
   - Списък с неодобрени въпроси и възможност за одобряването им.                check
   - Списък с юзъри.                                                             check
-  - Search po username
-  - Бутони за банване и правене на админ.
+  - Search по username.                                                         check
+  - Бутони за банване и правене на админ.                                       check
 
-4. Messaging & error handling
-5. Ataki defens
-6. 
+4. Messaging & error handling                                                   check
+5. CORS защита                                                                  check
+6. XSS защита                                                                   check

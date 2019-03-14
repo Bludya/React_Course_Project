@@ -23,3 +23,8 @@ export const makeAdminService = (id) => {
   id = safe_tags(id);
   return put('/auth/make-admin/' + id);
 }
+
+export const getUsersByUsernameService = (username) => {
+  username = safe_tags(username)
+  return get('/auth/get-by-username?searchString=' + username);
+}

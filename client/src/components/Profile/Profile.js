@@ -15,6 +15,7 @@ class Profile extends Component {
       entities: []
     }
 
+    this.toastAlert = props.toastAlert;
     this.showQuestions = this.showQuestions.bind(this);
     this.showAnswers = this.showAnswers.bind(this);
     this.handleQuesionSubmit = this.handleQuesionSubmit.bind(this);
@@ -43,13 +44,12 @@ class Profile extends Component {
   handleQuesionSubmit = (event, data) => {
     event.preventDefault();
     let tags = data.tags.split(' ').map(tag => tag.trim());
-    console.log(tags);
     let text = data.text;
-    console.log('Texts is: ' + text);
 
     postQuestion(tags, text)
-      .then(q =>{
-        console.log(q);
+      .then(res =>{
+        this.toastAlert(res);
+        this.showQuestions();
       })
   }
 

@@ -5,7 +5,7 @@ const User = require('../models/User');
 
 async function addTags(tags){
   let tagIds = [];
-  
+
   if(tags && Array.isArray(tags)){
     for(let tagName of tags){
       try{
@@ -277,7 +277,7 @@ module.exports = {
   getAnswersByUser: (req, res) => {
     let userId = req.token ? req.token.userId : null;
 
-    Answer.find({'author': userId})
+    Answer.find({'author': userId}).populate('author')
       .then(answers => {
         res.status(200)
           .json(answers);
@@ -302,7 +302,7 @@ module.exports = {
             q.answers.remove(a._id);
             q.save();
           })
-        res.json({'message': 'Answer ' + id + ' deleted successfully.'})
+        res.json({'message': 'Answer deleted successfully.'})
       })
       .catch(e => {
         console.error(e);

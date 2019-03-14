@@ -13,7 +13,7 @@ const AdminPanelList = (props) => {
             (<span onClick={() => props.functions.approveQuestion(e._id)}>Approve</span>) :
             (
               <Fragment>
-                <span onClick={() => props.functions.userBan(e._id, !e.banned)}>Ban</span>
+                <span onClick={() => props.functions.userBan(e._id, !e.banned)}>{e.banned ? 'Unban' : 'Ban'}</span>
                 <span onClick={() => props.functions.makeAdmin(e._id)}>Make Admin</span>
               </Fragment>
             )

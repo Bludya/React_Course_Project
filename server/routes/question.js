@@ -30,7 +30,7 @@ router.get('/answers/user', auth.isAuthed, getAnswersByUser);
 router.get('/answers/:id', getAnswersByQuestion);
 
 router.post('/add', postQuestion);
-router.post('/answers/:id', postAnswer);
+router.post('/answer/:id', postAnswer);
 
 router.delete('/answers/delete/:id', auth.isAdmin, deleteAnswer);
 

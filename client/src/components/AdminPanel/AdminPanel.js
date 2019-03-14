@@ -1,6 +1,6 @@
-import React, {Component} from 'react';
+import React, {Component, Fragment} from 'react';
 import {getUnapprovedQuestions, approveQuestionService} from '../../services/questions';
-import {getUsersService, userBanService, makeAdminService} from '../../services/auth';
+import {getUsersService, userBanService, makeAdminService, getUsersByUsernameService} from '../../services/auth';
 
 import Question from '../Entities/Question';
 import UserInfo from '../Entities/UserInfo';
@@ -12,14 +12,29 @@ class AdminPanel extends Component {
 
     this.state = {
       location: '',
-      entities: []
+      entities: [],
+      searchUsername: ''
     }
 
+    this.toastAlert = props.toastAlert;
     this.getUsers = this.getUsers.bind(this);
     this.userBan = this.userBan.bind(this);
     this.makeAdmin = this.makeAdmin.bind(this);
     this.showUnapprovedQuesions = this.showUnapprovedQuesions.bind(this);
     this.approveQuestion = this.approveQuestion.bind(this);
+    this.handleUsernameSearch = this.handleUsernameSearch.bind(this);
+  }
+
+  handleUsernameSearch = (event) => {
+    let searchString = event.target.value
+    console.log(searchString);
+    this.setState({searchUsername: searchString});
+    getUsersByUsernameService(searchString)
+      .then(users =>
+        this.setState({
+          entities: users
+        })
+      )
   }
 
   componentDidMount() {
@@ -28,7 +43,8 @@ class AdminPanel extends Component {
 
   approveQuestion = (id) => {
     approveQuestionService(id)
-      .then(() => {
+      .then((res) => {
+        this.toastAlert(res);
         this.showUnapprovedQuesions();
       })
   }
@@ -55,14 +71,16 @@ class AdminPanel extends Component {
 
   userBan = (id, banState) => {
     userBanService(id, banState)
-      .then(() => {
+      .then((res) => {
+        this.toastAlert(res);
         this.getUsers();
       })
   }
 
   makeAdmin = (id) => {
     makeAdminService(id)
-      .then(() => {
+      .then((res) => {
+        this.toastAlert(res);
         this.getUsers();
       })
   }
@@ -77,8 +95,27 @@ class AdminPanel extends Component {
           </ul>
         </aside>
         <main>
-          {this.state.location === 'unapprovedQuestions' ? <AdminPanelList entityType={"question"} functions={{approveQuestion: this.approveQuestion}} entities={this.state.entities} component={Question} /> : ''}
-          {this.state.location === 'usersList' ? <AdminPanelList entityType="userInfo" functions={{userBan: this.userBan, makeAdmin: this.makeAdmin}} entities={this.state.entities} component={UserInfo} /> : ''}
+          {
+            this.state.location === 'unapprovedQuestions' ?
+            <AdminPanelList
+              entityType={"question"}
+              functions={{approveQuestion: this.approveQuestion}}
+              entities={this.state.entities}
+              component={Question}
+            /> : ''
+          }
+          {
+            this.state.location === 'usersList' ?
+            (
+              <Fragment>
+              <div className="tag-input-group row input-group justify-content-center">
+                <label forhtml="searchUsername">Username: </label>
+                <input type="text" name="searchUsername" value={this.state.searchUsername} onChange={this.handleUsernameSearch} placeholder="username"/>
+              </div>
+                <AdminPanelList entityType="userInfo" functions={{userBan: this.userBan, makeAdmin: this.makeAdmin}} entities={this.state.entities} component={UserInfo} />
+              </Fragment>
+            ) : ''
+          }
         </main>
       </div>
     )

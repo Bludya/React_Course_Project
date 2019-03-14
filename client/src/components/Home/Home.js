@@ -27,6 +27,7 @@ class Home extends Component {
       isAdmin: props.isAdmin
     }
 
+    this.toastAlert = props.toastAlert;
     this.getQuestion = this.getQuestion.bind(this);
     this.postAnswer = this.postAnswer.bind(this);
     this.handleChange = this.handleChange.bind(this);
@@ -74,17 +75,23 @@ class Home extends Component {
 
     postAnswer(text, this.state.question._id)
       .then(res => {
-        this.setState({showAnswerForm: false});
 
+        this.toastAlert(res);
+
+        this.setState({showAnswerForm: false});
         if(this.state.showAnswers){
           this.loadAnswers();
         }
-      });
+      })
+      .catch(e => console.log(e));
   }
 
   deleteAnswerMethod = (answerId) => {
     deleteAnswer(answerId)
       .then(res => {
+
+        this.toastAlert(res);
+
         if(this.state.showAnswers){
           this.loadAnswers();
         }

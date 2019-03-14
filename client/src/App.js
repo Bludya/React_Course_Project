@@ -30,6 +30,15 @@ class App extends Component {
     window.sessionStorage.clear();
   }
 
+  toastAlert = (res) => {
+    if(res.error){
+      toast.error(res.error);
+      return;
+    }
+
+    toast.success(res.message);
+  }
+
   componentDidMount = () => {
     this.setState({
       token: '',
@@ -98,13 +107,13 @@ class App extends Component {
             <Suspense fallback={<span>Loading...</span>}>
               <Header loggedIn={this.state.loggedIn}  isAdmin={this.state.isAdmin} />
               <Switch>
-                <Route path='/' component={() => <Home isAdmin={this.state.isAdmin}/>} props={this.state.username} exact />
+                <Route path='/' component={() => <Home toastAlert={this.toastAlert} isAdmin={this.state.isAdmin}/>} props={this.state.username} exact />
                 <Route path='/login'  component={() => this.state.loggedIn ?  <Redirect to='/' />  : <Login handleSubmit={this.handleLogin} />} exact />
                 <Route path='/register' component={() => this.state.loggedIn ?  <Redirect to='/' />  : <Register handleSubmit={this.handleRegister} />}  exact />
                 <Route path='/logout' component={this.logout} />
 
-                <Route path='/profile' component={() => this.state.loggedIn ? <Profile /> : <Redirect to='/' />} exact />
-                <Route path='/admin-panel' component={() => this.state.isAdmin ? <AdminPanel /> : <Redirect to='/' />} exact />
+                <Route path='/profile' component={() => this.state.loggedIn ? <Profile toastAlert={this.toastAlert} /> : <Redirect to='/' />} exact />
+                <Route path='/admin-panel' component={() => this.state.isAdmin ? <AdminPanel toastAlert={this.toastAlert} /> : <Redirect to='/' />} exact />
                 <Route component={() => <NotFound />}/>
               </Switch>
             </Suspense>

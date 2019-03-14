@@ -90,6 +90,14 @@ module.exports = {
               .json({error: 'Internal server error.'});
         })
     },
+    getUsersByUsername: (req, res) => {
+      let searchUsername = req.query.searchString;
+      User.find({ "username": { "$regex": searchUsername, "$options": "i" } })
+        .then(users => {
+          res.status(200)
+            .json(users);
+        })
+    },
     banUser: (req, res) => {
       let userId = req.params.id;
       let banState = req.body.banState;
@@ -101,7 +109,7 @@ module.exports = {
           user.save();
 
           res.status(200)
-            .json({message: `User ${user.username} banned successfully.`, user});
+            .json({message: `User ${user.username} ${user.banned ? 'banned' : 'unbanned'} successfully.`, user});
         })
         .catch (e => {
           console.error(e);
@@ -122,7 +130,7 @@ module.exports = {
               .json({message: `User ${user.username} made Admin successfully.`, user});
           }else {
             res.status(200)
-              .json({message: `User ${user.username} is already admin.`, user});
+              .json({error: `User ${user.username} is already admin.`, user});
           }
         })
         .catch (e => {
@@ -130,5 +138,5 @@ module.exports = {
             res.status(500)
               .json({error: 'Internal server error.'});
         })
-    }
+    },
 };
