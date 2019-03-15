@@ -1,0 +1,17 @@
+.answer {
+  margin-bottom: 20px;
+}
+.answer h1 {
+  display: inline-block;
+  margin-left: 20px;
+  font-size: 18px;
+}
+
+.answer .author {
+  font-size: 12px;
+}
+
+.answer-question {
+  display: block;
+  margin-bottom: 10px;
+}

@@ -1,0 +1,15 @@
+
+.username-search{
+  display: block;
+  margin: 0 auto;
+}
+
+.username-search label{
+  display: block;
+  text-align: center;
+}
+
+.username-search input{
+  display: block;
+  margin: 0 auto;
+}

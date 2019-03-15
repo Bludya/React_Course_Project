@@ -4,7 +4,10 @@ import {getUsersService, userBanService, makeAdminService, getUsersByUsernameSer
 
 import Question from '../Entities/Question';
 import UserInfo from '../Entities/UserInfo';
-import AdminPanelList from './AdminPanelList';
+import AsideNav from '../AsideNav';
+import QuestionButtons from './QuestionButtons';
+import UserButtons from './UserButtons';
+import './AdminPanel.css';
 
 class AdminPanel extends Component {
   constructor(props){
@@ -86,33 +89,42 @@ class AdminPanel extends Component {
   }
 
   render(){
+    let asideNavLinks= [
+      {text: 'Unapproved Questions', onClick: this.showUnapprovedQuesions},
+      {text: 'List Users', onClick: this.getUsers}
+    ]
+
     return(
-      <div className="profile">
-        <aside>
-          <ul>
-            <li onClick={this.showUnapprovedQuesions}>Unapproved Questions</li>
-            <li onClick={this.getUsers}>List Users</li>
-          </ul>
-        </aside>
-        <main>
-          {
-            this.state.location === 'unapprovedQuestions' ?
-            <AdminPanelList
-              entityType={"question"}
-              functions={{approveQuestion: this.approveQuestion}}
-              entities={this.state.entities}
-              component={Question}
-            /> : ''
+      <div className="admin-panel row">
+        <AsideNav elementsData={asideNavLinks} />
+        <main className="col-xl-9">
+          { this.state.location === 'unapprovedQuestions' ?
+            (this.state.entities.map(e =>
+              <Question
+                key={e._id}
+                entity={e}
+                addOnComponent={<QuestionButtons approveQuestion={this.approveQuestion} id={e._id}/>}
+              />)
+            ) : ''
           }
-          {
-            this.state.location === 'usersList' ?
+          { this.state.location === 'usersList' ?
             (
               <Fragment>
-              <div className="tag-input-group row input-group justify-content-center">
-                <label forhtml="searchUsername">Username: </label>
-                <input type="text" name="searchUsername" value={this.state.searchUsername} onChange={this.handleUsernameSearch} placeholder="username"/>
-              </div>
-                <AdminPanelList entityType="userInfo" functions={{userBan: this.userBan, makeAdmin: this.makeAdmin}} entities={this.state.entities} component={UserInfo} />
+                <div className="username-search ">
+                  <input
+                    type="text"
+                    name="searchUsername"
+                    value={this.state.searchUsername}
+                    onChange={this.handleUsernameSearch}
+                    placeholder="username"/>
+                </div>
+                {this.state.entities.map(e =>
+                  <UserInfo
+                    key={e._id}
+                    entity={e}
+                    addOnComponent={<UserButtons userBan={this.userBan} makeAdmin={this.makeAdmin} id={e._id} banned={e.banned}/>}
+                  />)
+                }
               </Fragment>
             ) : ''
           }

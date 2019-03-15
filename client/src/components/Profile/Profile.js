@@ -5,6 +5,9 @@ import Question from '../Entities/Question';
 import Answer from '../Entities/Answer';
 import ProfileList from './ProfileList';
 import AddQuestion from './AddQuestion';
+import AsideNav from '../AsideNav';
+
+import './Profile.css';
 
 class Profile extends Component {
   constructor(props){
@@ -54,15 +57,15 @@ class Profile extends Component {
   }
 
   render(){
+    let asideNavLinks= [
+      {text: 'Add Question', onClick: () => this.setState({location: 'addQuestion'})},
+      {text: 'My Questions', onClick: this.showQuestions},
+      {text: 'My Answers', onClick: this.showAnswers}
+    ]
+
     return(
-      <div className="profile">
-        <aside>
-          <ul>
-            <li onClick={() => this.setState({location: 'addQuestion'})}>Add Question</li>
-            <li onClick={this.showQuestions}>My Questions</li>
-            <li onClick={this.showAnswers}>My Answers</li>
-          </ul>
-        </aside>
+      <div className="profile row">
+        <AsideNav elementsData={asideNavLinks} />
         <main>
           {this.state.location === 'addQuestion' ? <AddQuestion handleQuesionSubmit={this.handleQuesionSubmit}/> : ''}
           {this.state.location === 'questions' ? <ProfileList entities={this.state.entities} component={Question}/> : ''}

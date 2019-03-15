@@ -7,7 +7,7 @@
   color: #036564;
 }
 
-label{
+.Home label{
   display: inline-block;
   width: 10px;
   height: 10px;
@@ -24,15 +24,8 @@ label{
 
 .question-holder{
   text-align: center;
-  cursor:pointer;
   padding: 5px;
   margin-bottom: 20px;
-}
-
-.question .author{
-  text-align: right;
-  padding-left: 20px;
-  font-size: 12px;
 }
 
 #tag{
@@ -48,7 +41,6 @@ label{
   padding: 5px;
   margin: 0 10px;
   font-size: 25px;
-  cursor: pointer;
 }
 
 .answer-form form {
@@ -56,6 +48,10 @@ label{
 }
 
 .profile-picture{
-  height: 100px;
-  width: 100px;
+  height: 50px;
+  width: 50px;
+}
+
+.answers {
+  margin: 0 auto;
 }

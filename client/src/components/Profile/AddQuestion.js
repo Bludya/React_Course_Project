@@ -22,9 +22,9 @@ class AddQuestion extends Component {
   render(){
     return(
       <div className="add-question">
-        <h1 className="text-center">Add Question</h1>
+        <h1>Add Question</h1>
         <form id="question-form" onSubmit={(event) => this.handleQuesionSubmit(event, this.state)}>
-          <div className="tag-input-group row input-group justify-content-center">
+          <div className="tag-input-group input-group">
             <label forhtml="tag-input">#</label>
             <input type="text" id="tag-input" className="tag-input" value={this.state.tags} name="tags" onChange={this.handleChange} placeholder="tag1,tag2"/>
           </div>

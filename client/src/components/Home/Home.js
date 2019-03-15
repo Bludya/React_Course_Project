@@ -13,6 +13,7 @@ import Question from '../Entities/Question';
 import Answer from '../Entities/Answer';
 import AnswerForm from './AnswerForm';
 import QuestionButtons from './QuestionButtons';
+import AnswerButtons from './AnswerButtons';
 
 class Home extends Component {
   constructor(props){
@@ -148,27 +149,61 @@ class Home extends Component {
           <input type="text" id="tag-input" className="tag-input" value={this.state.tag} name="tag" onChange={this.handleChange} placeholder="tag"/>
         </div>
         <div className="d-flex flex-column justify-content-center">
-          {this.state.question ? (
-            <Fragment>
-              <div className="question-holder">
-                <Question entity={this.state.question} getQuestionMethod={this.getQuestion} rateQuestionMethod={this.rateQuestionMethod} message={this.state.message}/>
-              </div>
-              <QuestionButtons thumbsUp={this.state.question.ups.length} thumbsDown={this.state.question.downs.length} showAnswers={this.showAnswers} showAnswerForm={this.showAnswerForm} rateQuestionMethod={this.rateQuestionMethod}/>
-              { this.state.showAnswerForm ?
-                (<div className="answer-form row">
-                  <AnswerForm questionId = {this.state.question._id} submitHandler={this.postAnswer}/>
-                </div>) : ''
-              }
-              {
-                this.state.showAnswers ?
-                (<div className="answers justify-content-center">
-                  {this.state.answers.map(a => <Answer isAdmin={this.state.isAdmin} rateAnswerMethod={this.rateAnswerMethod} deleteAnswerMethod={this.deleteAnswerMethod} entity={a} key={a._id}/>)}
-                </div>) : ''
-              }
-
-            </Fragment>) :
+          {this.state.question ?
             (
-              <div className="question-holder row justify-content-center " onClick={this.getQuestion}>
+              <Fragment>
+                <div className="question-holder">
+                  <Question
+                    showAsLink={true}
+                    showAuthor={true}
+                    entity={this.state.question}
+                    getQuestionMethod={this.getQuestion}
+                    message={this.state.message}
+                    addOnComponent=
+                      {
+                        <QuestionButtons
+                          thumbsUp={this.state.question.ups.length}
+                          thumbsDown={this.state.question.downs.length}
+                          showAnswers={this.showAnswers}
+                          showAnswerForm={this.showAnswerForm}
+                          rateQuestionMethod={this.rateQuestionMethod}
+                        />
+                      }
+                  />
+                </div>
+
+                { this.state.showAnswerForm ?
+                  (<div className="answer-form row">
+                    <AnswerForm questionId = {this.state.question._id} submitHandler={this.postAnswer}/>
+                  </div>) : ''
+                }
+
+                { this.state.showAnswers ?
+                  (
+                    <div className="answers">
+                      {this.state.answers.map(a =>
+                        <Answer
+                          isAdmin={this.state.isAdmin}
+                          showAuthor={true}
+                          entity={a}
+                          key={a._id}
+                          addOnComponent=
+                          {
+                            <AnswerButtons
+                              entity={a}
+                              rateAnswerMethod={this.rateAnswerMethod}
+                              deleteAnswerMethod={this.deleteAnswerMethod}
+                            />
+                          }
+                        />
+                      )}
+                    </div>
+                  ) : ''
+                }
+              </Fragment>
+            ) :
+            (
+              <div className="question-holder row justify-content-center link" onClick={this.getQuestion}>
                 <h1 className="question">{this.state.message}</h1>
               </div>
             )

@@ -277,7 +277,7 @@ module.exports = {
   getAnswersByUser: (req, res) => {
     let userId = req.token ? req.token.userId : null;
 
-    Answer.find({'author': userId}).populate('author')
+    Answer.find({'author': userId}).populate('author question')
       .then(answers => {
         res.status(200)
           .json(answers);

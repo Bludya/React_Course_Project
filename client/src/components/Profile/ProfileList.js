@@ -5,7 +5,7 @@ const ProfileList = (props) => {
 
   return(
     <div className="entity-list">
-      {props.entities.map(e => <Entity key={e._id} entity={e}/>)}
+      {props.entities.map(e => <Entity key={e._id} entity={e} showQuestion={true}/>)}
     </div>
   )
 }
